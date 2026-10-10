@@ -40,7 +40,6 @@ para qualquer empresa é uma linha genérica — o exemplo do seu segmento
 [a medida de desempenho com fórmula: sobre o quê se
 conta, sobre qual conjunto, quanto é sucesso]
 
-<!-- Medir o percentual de pedidos travados diagnosticados corretamente e resolvidos dentro do tempo esperado, em relação ao total de pedidos analisados. -->
 Alcançar pelo menos 95% de precisão no diagnóstico de pedidos travados, identificando corretamente as causas dos problemas em relação ao total de pedidos analisados.
 
 **Environment:**
@@ -80,8 +79,31 @@ Perguntas que guiam o preenchimento (uma por dimensão):
 -->
 **Quando se preenche:** no Laboratório 02, no sábado (encontro 2).
 
-[uma linha por dimensão: a classificação e a frase de
-justificativa — começando por observabilidade e determinismo]
+**Domínio:** AMS · Assistente de Manutenção Segura
+
+| Dimensão | Minha classificação | Justificativa (uma frase) |
+|---|---|---|
+| Observabilidade | Parcialmente observável | Nem todas as causas dos pedidos travados podem ser identificadas pelos dados disponíveis. |
+| Número de agentes | Multiagente| Outros sistemas e equipes humanas influenciam o resultado dos pedidos. |
+| Determinismo | Estocástico | Falhas e mudanças nos sistemas podem gerar resultados diferentes. |
+| Episódico ou sequencial | Sequencial | As decisões tomadas influenciam as próximas etapas da resolução. |
+| Estático ou dinâmico | Dinâmico | As informações dos pedidos podem mudar enquanto o agente analisa o problema. |
+| Discreto ou contínuo | Discreto | O agente trabalha com estados de pedidos, alertas e ações definidas. |
+| Conhecido ou desconhecido | Parcialmente desconhecido | O agente pode não conhecer previamente todas as causas e regras das falhas. |
+
+## Tabela de consequências do ambiente para o projeto
+
+| Se o ambiente é... | O projeto precisa de... |
+|---|---|
+| **Parcialmente observável** | Manter estado interno, memória e contexto dos pedidos analisados. |
+| **Multiagente** | Definir protocolos de comunicação com as equipes e considerar as ações de outros sistemas. |
+| **Estocástico** | Considerar resultados prováveis, permitir novas tentativas e estabelecer um tempo máximo de execução. |
+| **Sequencial** | Planejar as etapas do diagnóstico e avaliar as consequências das decisões ao longo da resolução. |
+| **Dinâmico** | Definir prazos de resposta e aceitar respostas parciais quando necessário. |
+| **Contínuo** | Discretizar variáveis contínuas, justificando a granularidade adotada. |
+| **Desconhecido** | Prever uma fase de exploração e registrar o conhecimento adquirido sobre as falhas. |
+
+
 
 ---
 
@@ -176,3 +198,25 @@ Perguntas que guiam o preenchimento:
 
 [os cinco componentes do seu subproblema: estado inicial,
 ações, transição, teste de objetivo, custo]
+
+verificar-formulacao — teste de sanidade da formulação de busca
+(sem argumentos: rodando sobre o catálogo — aponte o seu com arquivo.py:ATRIBUTO)
+
+— diagnostico.PEQUENA
+  1. estado é hashable ✅
+  2. transição é função ✅
+  3. ações estáveis na ordem ✅
+  4. custo é positivo ou zero ✅
+  5. objetivo é alcançável ✅
+  6. estado não guarda o caminho ✅
+  resumo: 6 ✅ · 0 ⚠️ · 0 ❌
+
+— diagnostico.MAIOR
+  1. estado é hashable ✅
+  2. transição é função ✅
+  3. ações estáveis na ordem ✅
+  4. custo é positivo ou zero ❌
+     a ação 'renovar a credencial em ambiente isolado' em ((), ()) custa -8.0. O que fazer: custo negativo quebra as garantias de otimalidade (o custo uniforme e o A* assumem custos não negativos) — reveja o custo() ou modele o ganho dentro do estado.
+  5. objetivo é alcançável ✅
+  6. estado não guarda o caminho ✅
+  resumo: 5 ✅ · 0 ⚠️ · 1 ❌
